@@ -3,7 +3,7 @@
 const express = require("express");
 const app = express();
 const userRoute = require("./routes/userRoute");
-
+const path = require("path");
 //DB connectivity
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
