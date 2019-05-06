@@ -7,7 +7,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
-const config = require("./db");
+//const config = require("./db");
 const users = require("./serverRoutes/user");
 //=====DB/login dependencies
 if (process.env.NODE_ENV === "production") {
