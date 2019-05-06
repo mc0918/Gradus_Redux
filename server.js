@@ -1,76 +1,80 @@
-// server.js
+var express = require("express");
+var app = express();
+const routes = require("./serverRoutes");
+require("dotenv").config();
 
-const express = require("express");
-const app = express();
-const userRoute = require("./routes/userRoute");
-const path = require("path");
-
-//DB connectivity
+//=====DB/login dependencies
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const mongodb = require("mongodb");
-var ObjectID = mongodb.ObjectID;
-const PORT = process.env.PORT || 4000;
-//const PORT = 4000;
-const cors = require("cors");
-const config = require("./DB");
-
-// app.use(cors());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
+const passport = require("passport");
+const config = require("./db");
+const users = require("./serverRoutes/user");
+//=====DB/login dependencies
 if (process.env.NODE_ENV === "production") {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, "client/build")));
-  // Handle React routing, return all requests to React app
-  app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  // Exprees will serve up production assets
+  app.use(express.static("client/build"));
+  // Express serve up index.html file if it doesn't recognize route
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
 
-app.use(express.static(__dirname + "/public"));
+var databaseURI = "mongodb://localhost/Gradus";
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+} else {
+  mongoose.connect(databaseURI, { useNewUrlParser: true });
+}
+var db = mongoose.connection;
+db.on("error", err => console.log("mongoose error :", err));
+db.once("open", () => console.log("mongoose connection successful"));
+
+app.use(function(req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
+  // Request methods you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  // Request headers you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
+app.use(passport.initialize());
+require("./passport")(passport);
+
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-var db;
-// Connect to the database before starting the application server.
-mongodb.MongoClient.connect(
-  config.mongoURI,
-  { useNewUrlParser: true },
-  function(err, database) {
-    if (err) {
-      console.log(err);
-      process.exit(1);
-    }
+app.use("/api/users", users);
+app.use("/", routes);
 
-    // Save database object from the callback for reuse.
-    db = database;
-    console.log("Database connection ready");
-    console.log(process.env.PORT);
-    //API routes
-    app.use("/userRoute", userRoute);
+var databaseURI = "mongodb://localhost/Gradus";
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect(databaseURI);
+}
+var db = mongoose.connection;
+db.on("error", err => console.log("mongoose error :", err));
+db.once("open", () => console.log("mongoose connection successful"));
 
-    //Start server
-    app.listen(process.env.PORT || PORT, () => {
-      console.log("Server is running on Port: ", process.env.PORT || PORT);
-    });
-  }
-);
+const PORT = process.env.PORT || 5000;
 
-// // Need to change this for Heroku I think
-// mongoose.connect(config.mongoURI || config.DB).then(
-//   () => {
-//     console.log("DB connected");
-//     console.log(config.mongoURI);
-//     console.log(process.env.PORT);
-//   },
-//   err => {
-//     console.log("connection err: " + err);
-//   }
-// );
-
-// // API routes
-// app.use("/userRoute", userRoute);
-
-// //Start server
-// app.listen(process.env.PORT || PORT, () => {
-//   console.log("Server is running on Port: ", process.env.PORT || PORT);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
+});

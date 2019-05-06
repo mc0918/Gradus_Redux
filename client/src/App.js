@@ -1,36 +1,64 @@
-//===========OTHER TUTORIAL==============
-// App.js
-//RUN NPM START AND NODEMON SERVER.JS AND MONGOD TO WORK APP LOCALLY
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+// Nick Component
+import Graph from "./components/graphs";
+// // Sarah Component
+// import Piano from "./components/virtualPiano/virtualPiano";
 
-import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Create from "./components/Create";
-import Index from "./components/Index";
+//Mahfouz components
+import Navbar from "./components/Navbar/Navbar";
+import Register from "./components/Register";
+import Home from "./pages/Home/Home";
+import Login from "./components/LogIn/Login";
+import { Provider } from "react-redux";
+import store from "./components/actions/store";
+import jwt_decode from "jwt-decode";
+import setAuthToken from "./components/actions/setAuthToken";
+import {
+  setCurrentUser,
+  logoutUser
+} from "./components/actions/authentication";
 
-import "./App.css";
+//Michael components
+import Midi from "./components/Midi/MidiTest";
+import Abcjs from "react-abcjs";
 
-class App extends Component {
-  render() {
-    return (
+//Ky components
+import Landing from "./pages/Landing/index";
+import "./index.css";
+import Graphs from "./components/graphs";
+
+if (localStorage.jwtToken) {
+  setAuthToken(localStorage.jwtToken);
+  const decoded = jwt_decode(localStorage.jwtToken);
+  store.dispatch(setCurrentUser(decoded));
+
+  const currentTime = Date.now() / 1000;
+  if (decoded.exp < currentTime) {
+    store.dispatch(logoutUser());
+    window.location.href = "/login";
+  }
+}
+
+function App() {
+  return (
+    <Provider store={store}>
       <Router>
-        <div className="container">
-          <nav className="navbar navbar-light bg-light">
-            <a className="navbar-brand" href={"/"}>
-              App
-            </a>
-            <Link to={"/create"}>Create</Link>
-            <Link to={"/index"}>Index</Link>
-          </nav>
-
-          <br />
-          <Switch>
-            <Route exact path="/create" component={Create} />
-            <Route path="/index" component={Index} />
-          </Switch>
+        <div>
+          <Navbar />
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/home" component={Home}>
+            <Graphs />
+            <Midi />
+          </Route>
+          <div className="container">
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/login" component={Login} />
+          </div>
         </div>
       </Router>
-    );
-  }
+    </Provider>
+  );
 }
 
 export default App;
