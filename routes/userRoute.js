@@ -6,6 +6,7 @@ const userRouter = express.Router();
 
 const User = require("../models/User");
 
+//"/add changed to /"
 userRouter.route("/add").post(function(req, res) {
   const user = new User(req.body);
   user

@@ -27,7 +27,10 @@ export default class Create extends Component {
       email: this.state.email,
       password: this.state.password
     };
-    axios.post("/userRoute/add", user).then(res => console.log(res.data));
+    // console.log(user);
+    axios
+      .post("/userRoute/add", user)
+      .then(res => console.log("user added: " + res.data));
   };
 
   render() {

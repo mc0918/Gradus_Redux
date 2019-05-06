@@ -9,6 +9,6 @@ module.exports = {
   //mongodb is not used in the react app but run in the command line to set a config variable
   //that we can access in node.js as process.env.MONGO
   //gradus and gradus123 are database login (user, pass respectively)
-  //take this variable out of final build
-  mongodb: "gradus:gradus123@ds151626.mlab.com:51626/heroku_9z5q0j31"
+  //hide this variable in final build
+  mongoURI: "mongodb://gradus:gradus123@ds151626.mlab.com:51626/heroku_9z5q0j31"
 };
