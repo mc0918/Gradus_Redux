@@ -30,47 +30,47 @@ app.use(bodyParser.json());
 //   });
 // }
 
-// var db;
-// // Connect to the database before starting the application server.
-// mongodb.MongoClient.connect(
-//   config.mongoURI,
-//   { useNewUrlParser: true },
-//   function(err, database) {
-//     if (err) {
-//       console.log(err);
-//       process.exit(1);
-//     }
+var db;
+// Connect to the database before starting the application server.
+mongodb.MongoClient.connect(
+  config.mongoURI,
+  { useNewUrlParser: true },
+  function(err, database) {
+    if (err) {
+      console.log(err);
+      process.exit(1);
+    }
 
-//     // Save database object from the callback for reuse.
-//     db = database;
-//     console.log("Database connection ready");
-//     console.log(process.env.PORT);
-//     //API routes
-//     app.use("/userRoute", userRoute);
-
-//     //Start server
-//     app.listen(process.env.PORT || PORT, () => {
-//       console.log("Server is running on Port: ", process.env.PORT || PORT);
-//     });
-//   }
-// );
-
-// Need to change this for Heroku I think
-mongoose.connect(config.mongoURI || config.DB).then(
-  () => {
-    console.log("DB connected");
-    console.log(config.mongoURI);
+    // Save database object from the callback for reuse.
+    db = database;
+    console.log("Database connection ready");
     console.log(process.env.PORT);
-  },
-  err => {
-    console.log("connection err: " + err);
+    //API routes
+    app.use("/userRoute", userRoute);
+
+    //Start server
+    app.listen(process.env.PORT || PORT, () => {
+      console.log("Server is running on Port: ", process.env.PORT || PORT);
+    });
   }
 );
 
-// API routes
-app.use("/userRoute", userRoute);
+// // Need to change this for Heroku I think
+// mongoose.connect(config.mongoURI || config.DB).then(
+//   () => {
+//     console.log("DB connected");
+//     console.log(config.mongoURI);
+//     console.log(process.env.PORT);
+//   },
+//   err => {
+//     console.log("connection err: " + err);
+//   }
+// );
 
-//Start server
-app.listen(process.env.PORT || PORT, () => {
-  console.log("Server is running on Port: ", process.env.PORT || PORT);
-});
+// // API routes
+// app.use("/userRoute", userRoute);
+
+// //Start server
+// app.listen(process.env.PORT || PORT, () => {
+//   console.log("Server is running on Port: ", process.env.PORT || PORT);
+// });
