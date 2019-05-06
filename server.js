@@ -31,8 +31,12 @@ db.on("error", err => console.log("mongoose error :", err));
 db.once("open", () => console.log("mongoose connection successful"));
 
 app.use(function(req, res, next) {
-  // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  // Website you wish to allow to
+  //either localhost:3000 or heroku deployed link
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://guarded-sands-13025.herokuapp.com"
+  );
 
   // Request methods you wish to allow
   res.setHeader(
