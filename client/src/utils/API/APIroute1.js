@@ -25,9 +25,9 @@ export default {
     return axios.post("/api/graphs/counterpointSuite", data);
     // console.log(data);
   },
-  findAll: function() {
+  findAll: function(data) {
     console.log("hello");
 
-    return axios.get("/api/database/");
+    return axios.post("/api/database/", data);
   }
 };
