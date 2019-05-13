@@ -1,6 +1,8 @@
 var express = require("express");
 var app = express();
 const routes = require("./serverRoutes");
+// console.log(routes);
+
 require("dotenv").config();
 
 //=====DB/login dependencies
@@ -9,6 +11,23 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 //const config = require("./db");
 const users = require("./serverRoutes/user");
+
+const PORT = process.env.PORT || 5000;
+var databaseURI = "mongodb://localhost/Gradus";
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+} else {
+  mongoose.connect(databaseURI, { useNewUrlParser: true });
+}
+var db = mongoose.connection;
+db.on("error", err => console.log("mongoose error :", err));
+db.once("open", () => console.log("mongoose connection successful"));
+
+app.use(passport.initialize());
+require("./passport")(passport);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //=====DB/login dependencies
 if (process.env.NODE_ENV === "production") {
   // Exprees will serve up production assets
@@ -20,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   // Website you wish to allow to
   //either localhost:3000 or heroku deployed link (https://guarded-sands-13025.herokuapp.com)
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -45,36 +64,21 @@ app.use(function(req, res, next) {
   next();
 });
 
-var databaseURI = "mongodb://localhost/Gradus";
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
-} else {
-  mongoose.connect(databaseURI, { useNewUrlParser: true });
-}
-var db = mongoose.connection;
-db.on("error", err => console.log("mongoose error :", err));
-db.once("open", () => console.log("mongoose connection successful"));
 
-app.use(passport.initialize());
-require("./passport")(passport);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.use("/api/users", users);
 app.use("/", routes);
+app.use("/api/users", users);
 
-var databaseURI = "mongodb://localhost/Gradus";
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI);
-} else {
-  mongoose.connect(databaseURI);
-}
-var db = mongoose.connection;
-db.on("error", err => console.log("mongoose error :", err));
-db.once("open", () => console.log("mongoose connection successful"));
+// var databaseURI = "mongodb://localhost/Gradus";
+// if (process.env.MONGODB_URI) {
+//   mongoose.connect(process.env.MONGODB_URI);
+// } else {
+//   mongoose.connect(databaseURI);
+// }
+// var db = mongoose.connection;
+// db.on("error", err => console.log("mongoose error :", err));
+// db.once("open", () => console.log("mongoose connection successful"));
 
-const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);

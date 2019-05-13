@@ -36,13 +36,13 @@ class Login extends Component {
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/");
+      this.props.history.push("/home");
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/");
+      this.props.history.push("/home");
     }
     if (nextProps.errors) {
       this.setState({
@@ -56,10 +56,16 @@ class Login extends Component {
     return (
       <div
         className="container logIn-box"
-        style={{ marginTop: "50px", width: "700px" }}
+        style={{ marginTop: "200px", width: "700px" }}
       >
-        <h2 style={{ marginBottom: "40px" }}>Login</h2>
-        <form onSubmit={this.handleSubmit}>
+        <h2>Welcome Back</h2>
+        <p style={{ marginBottom: "20px" }}>
+          Are you new to Gradus?{" "}
+          <a className="signUp-link" href="/register">
+            Sign Up
+          </a>
+        </p>
+        <form style={{ marginTop: "30px" }} onSubmit={this.handleSubmit}>
           <div className="form-group">
             <input
               type="email"
@@ -91,7 +97,7 @@ class Login extends Component {
             )}
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-primary submit">
+            <button type="submit" className="btn submit-button">
               Login User
             </button>
           </div>

@@ -1,9 +1,17 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  // Switch,
+  Redirect
+} from "react-router-dom";
 // Nick Component
-import Graph from "./components/graphs";
+// import Graph from "./components/graphs";
 // // Sarah Component
 // import Piano from "./components/virtualPiano/virtualPiano";
+
+import Exercise from "./pages/Exercise/index";
+// import ExCard from "./components/Exercise-Card/ExCard";
 
 //Mahfouz components
 import Navbar from "./components/Navbar/Navbar";
@@ -20,13 +28,15 @@ import {
 } from "./components/actions/authentication";
 
 //Michael components
-import Midi from "./components/Midi/MidiTest";
-import Abcjs from "react-abcjs";
+// import Midi from "./components/Midi/MidiTest";
+// import Abcjs from "react-abcjs";
 
 //Ky components
 import Landing from "./pages/Landing/index";
 import "./index.css";
-import Graphs from "./components/graphs";
+// import Graphs from "./components/graphs";
+// import Toggle from "./components/Toggle/index";
+import Footer from "./components/Footer/index";
 
 if (localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
@@ -39,22 +49,44 @@ if (localStorage.jwtToken) {
     window.location.href = "/login";
   }
 }
+export const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      localStorage.getItem("jwtToken") ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: "/login",
+            state: { from: props.location }
+          }}
+        />
+      )
+    }
+  />
+);
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div>
+        <div className="main-container">
           <Navbar />
           <Route exact path="/" component={Landing} />
-          <Route exact path="/home" component={Home}>
-            <Graphs />
-            <Midi />
-          </Route>
-          <div className="container">
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
-          </div>
+          {/* use for production */}
+           <PrivateRoute exact path="/home" component={Home} /> 
+          {/* use for localhost */}
+    {/* <Route exact path="/home" component={Home} /> */}
+
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={Login} />
+
+          {/* use for production */}
+          <PrivateRoute exact path="/pick-exercise" component={Exercise} /> 
+          {/* use for localhost */}
+          {/* <Route exact path="/pick-exercise" component={Exercise} /> */}
+          <Footer />
         </div>
       </Router>
     </Provider>
