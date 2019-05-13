@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 const routes = require("./serverRoutes");
+
 // console.log(routes);
 
 require("dotenv").config();
@@ -39,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   // Website you wish to allow to
   //either localhost:3000 or heroku deployed link (https://guarded-sands-13025.herokuapp.com)
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -64,10 +65,12 @@ app.use(function (req, res, next) {
   next();
 });
 
-
-
 app.use("/", routes);
 app.use("/api/users", users);
+
+//NEW STUFF HERE
+const cantus = require("./serverRoutes/api/database");
+app.use("/api/cantus", cantus);
 
 // var databaseURI = "mongodb://localhost/Gradus";
 // if (process.env.MONGODB_URI) {
@@ -78,7 +81,6 @@ app.use("/api/users", users);
 // var db = mongoose.connection;
 // db.on("error", err => console.log("mongoose error :", err));
 // db.once("open", () => console.log("mongoose connection successful"));
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
