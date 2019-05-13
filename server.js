@@ -71,6 +71,7 @@ app.use("/api/users", users);
 //NEW STUFF HERE
 const cantus = require("./serverRoutes/api/database");
 app.use("/api/cantus", cantus);
+console.log(cantus);
 
 // var databaseURI = "mongodb://localhost/Gradus";
 // if (process.env.MONGODB_URI) {

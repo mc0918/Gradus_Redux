@@ -5,7 +5,9 @@ const router = require("express").Router();
 
 //Changed "/" to "/cantus"
 //Changed.route to .get
-router.get("/cantus").get(databaseController.findAll);
+router.get("/cantus").get(databaseController.findAll, (req, res) => {
+  return res.json(res);
+});
 // router.get("/", )
 
 module.exports = router;
