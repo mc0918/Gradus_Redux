@@ -6,7 +6,7 @@ module.exports = {
   findAll: function(req, res) {
     db.CantusFirmus.find({}).then(data => {
       // res.json(data)
-      res.json("clam");
+      //   res.json("clam");
       console.log("data: ", data);
     });
   }

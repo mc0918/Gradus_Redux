@@ -28,6 +28,6 @@ export default {
   findAll: function(data) {
     console.log("hello");
 
-    return axios.post("/api/database/", data);
+    return axios.post("/api/cantus/", data);
   }
 };

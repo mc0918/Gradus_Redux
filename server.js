@@ -156,14 +156,29 @@ db.once("open", function callback() {
 
   app.use("/", routes);
   app.use("/api/users", users);
+  // console.log(app._router.stack);
 
   //NEW STUFF HERE
   const cantus = require("./serverRoutes/api/database");
-  app.post("/api/database", (req, res) => {
-    Song.find({}).toArray(function(err, docs) {
-      res.send(docs);
-      console.log("DOOOOOOOOCCCCSSSS!!!", docs);
+  const dbModel = require("./serverModels/CantusFirmus");
+  app.get("/cantus", (req, res) => {
+    console.log("route hit!");
+
+    dbModel.find({}).then(data => {
+      // res.json(data)
+      //   res.json("clam");
+      console.log("data: ", data);
+      res.json(data);
     });
+    // res.json("sent!");
+  });
+  app.post("/api/cantus", (req, res) => {
+    console.log(req.body);
+    // Song.find({}).toArray(function(err, docs) {
+    //   res.send(docs);
+    //   console.log("DOOOOOOOOCCCCSSSS!!!", docs);
+    // });
+    res.send("routes match?");
   });
 
   // var databaseURI = "mongodb://localhost/Gradus";
